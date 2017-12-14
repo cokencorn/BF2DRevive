@@ -30,21 +30,18 @@ class GamespyAccountDB(DatabaseDriver):
         query = ("INSERT INTO accounts(name, password, email, country, lastip) VALUES(%s, %s, %s, %s, %s)")
         result = super(GamespyAccountDB, self).query(query, [nick, hash, email.lower(), country, lastip])
         lastrow = result.lastrowid
-        result.close()
         return lastrow
 
     def set_user_country(self, pid, country):
         query = ("UPDATE accounts SET country=%s WHERE id=%s")
         result = super(GamespyAccountDB, self).query(query, [country, pid])
         lastrow = result.lastrowid
-        result.close()
         return lastrow
 
     def set_session(self, session, pid):
         query = ("UPDATE accounts SET session=%s WHERE id=%s")
         result = super(GamespyAccountDB, self).query(query, [session, pid])
         lastrow = result.lastrowid
-        result.close()
         return lastrow
 
     def create_accounts_table(self):

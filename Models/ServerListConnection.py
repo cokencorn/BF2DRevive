@@ -1,5 +1,6 @@
 import socket
 import time
+import errno
 from threading import Thread
 from Utils.Enctypex import Enctypex
 
@@ -36,25 +37,32 @@ class ServerListConnection(Thread):
         try:
             return self.socket.recv(8192)
         except socket.error, exc:
-            if exc.errno == 10054:
+            if exc.errno == errno.WSAECONNRESET:
                 # Client shutdown
                 self.debug("Client disconnected. Code: 10054")
                 self.active = False
-            if exc.errno == 10053:
-                # Too frequent requests, cancel one
+                return
+            if exc.errno == errno.ECONNRESET:
+                # Too frequent requests causes this, drop them
+                self.debug("Client disconnected. Code: 10053")
                 self.active = False
-            print "Socket error: %s" % exc
-            pass
+                return
+            print "SL - RECV Socket error: %s" % exc
+            self.active = False
 
     def prep_buffer_before_send(self, data):
-        # This converts string to bytes
+        # This converts string to bytes (array)
         buffer_data = bytearray()
         buffer_data.extend(data)
         return buffer_data
 
     def send_to_client(self, buff):
         self.debug("Sending: " + buff)
-        self.socket.send(self.prep_buffer_before_send(buff))
+        try:
+            self.socket.send(self.prep_buffer_before_send(buff))
+        except socket.error, exc:
+            print "SL - SEND Socket error: %s" % exc
+            pass
 
     def parse_request(self, data):
 
@@ -84,6 +92,7 @@ class ServerListConnection(Thread):
         # Remove empty strings
         fields = filter(None, fields)
         data = bytearray()
+        # Get IP bytes
         data.extend(socket.inet_aton(self.address[0]))
         data.extend([25, 100, 21, 0])
 

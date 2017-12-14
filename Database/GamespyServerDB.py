@@ -32,7 +32,6 @@ class GamespyServerDB(DatabaseDriver):
         query = ("INSERT INTO servers(" + query_param_str + ") VALUES(" + query_value_str + ")")
         result = super(GamespyServerDB, self).query(query, query_vals)
         lastrow = result.lastrowid
-        result.close()
         return lastrow
 
     def update_server(self, id, server_vars):
@@ -55,7 +54,6 @@ class GamespyServerDB(DatabaseDriver):
         query = ("UPDATE servers SET " + query_param_str + " WHERE id=%s")
         result = super(GamespyServerDB, self).query(query, query_vals)
         lastrow = result.lastrowid
-        result.close()
         return lastrow
 
     def delete_server(self, id):

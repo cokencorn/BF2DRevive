@@ -2,6 +2,7 @@ import threading
 from threading import Thread
 import time
 import socket
+import errno
 from random import choice
 from string import lowercase
 from CommHandlers.CMCommHandler import CMCommHandler
@@ -22,7 +23,7 @@ class AccountConnection(Thread):
 
     # Player Details
     pid = 0
-    session = None
+    session = 0
     nick = None
     email = None
     uniquenick = None
@@ -61,14 +62,20 @@ class AccountConnection(Thread):
         try:
             return self.socket.recv(8192)
         except socket.error, exc:
-            if exc.errno == 10054:
-                # Client shutdown
+            if exc.errno == errno.ECONNRESET:
+                # Connection reset by peer
                 self.disconnect()
-            if exc.errno == 104:
-                # Client shutdown
+                return
+            if int(exc.errno) == int(10054):
+                # An existing connection was forcibly closed by the remote host
                 self.disconnect()
+                return
+            if exc.errno == int(110):
+                # Timeout..
+                self.disconnect()
+                return
             # Anything else, we print
-            print "Socket error: %s" % exc
+            print "RECV Socket error: %s" % exc
             self.disconnect()
 
     def prep_buffer_before_send(self, data):
@@ -82,13 +89,12 @@ class AccountConnection(Thread):
         try:
             self.socket.send(self.prep_buffer_before_send(buff))
         except socket.error, exc:
-            # Broken pipe? Usually happens during KA reqs.
-            if exc.errno == 32:
-                # Connection dropped
+            if exc.errno == errno.EPIPE:
+                # Broken Pipe - 32
                 self.disconnect()
-            else:
-                print "Socket error: %s" % exc
-                self.disconnect()
+                return
+            print "SEND Socket error: %s" % exc
+            self.disconnect()
 
     def prep_error_message(self, message):
         return '\\error\\\err\\0\\fatal\\\errmsg\\' + message + '\\id\\1\\final\\'
@@ -150,12 +156,14 @@ class AccountConnection(Thread):
         return True if self.parent.type == "CM" else False
 
     def disconnect(self):
-        if self.is_parent_cm():
+        if self.is_parent_cm() and self.session is not 0:
             self.parent.client_disconnect(self)
         self.socket.close()
         # Remove active session
-        self.db.set_session(0, self.pid)
+        if self.pid is not None:
+            self.db.set_session(0, self.pid)
         self.active = False
+
 
     def unknown_query(self, query):
         print "Unknown Query: " + str(query)
@@ -178,12 +186,17 @@ class AccountConnection(Thread):
         return True
 
     def send_keep_alive(self, start_now=True):
+        print "KA Req - 1"
         if self.active:
-            # Send every 30 seconds to check if client is still with us.
-            threading.Timer(30, self.send_keep_alive).start()
+            print "KA Req - 2"
             if start_now:
+                print "KA Req - 3"
                 # print "Sending keep alive to: " + str(self.uniquenick or self.nick)
                 self.send_to_client('\\ka\\\\final\\')
+            if self.active:
+                print "KA Req - 4"
+                # Send every 45 seconds to check if client is still with us.
+                threading.Timer(45, self.send_keep_alive).start()
 
     def debug(self, string):
         if self.debug_mode:
