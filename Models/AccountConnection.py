@@ -93,6 +93,9 @@ class AccountConnection(Thread):
                 # Broken Pipe - 32
                 self.disconnect()
                 return
+            if exc.errno == int(104):
+                # Connection reset by peer
+                self.disconnect()
             print "SEND Socket error: %s" % exc
             self.disconnect()
 

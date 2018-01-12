@@ -1,6 +1,7 @@
 import socket
 import time
 import errno
+import struct
 from threading import Thread
 from Utils.Enctypex import Enctypex
 
@@ -94,7 +95,9 @@ class ServerListConnection(Thread):
         data = bytearray()
         # Get IP bytes
         data.extend(socket.inet_aton(self.address[0]))
-        data.extend([25, 100, 21, 0])
+        data.extend([25, 100])  # Port
+        data.extend([21])  # Fields length
+        data.extend([0])  # End
 
         for index in range(0, len(fields)):
             if len(fields[index]) > 0:
@@ -105,8 +108,11 @@ class ServerListConnection(Thread):
         for server in self.db.get_servers():
 
             data.append(81)
-            data.extend(socket.inet_aton(server['server_ip']))
-            data.extend([116, 204, 255])
+            data.extend(socket.inet_aton(server['server_ip']))  # IP Bytes
+            query_port = struct.pack('>H', int(server['server_port']))
+            data.extend(struct.unpack('>BB', query_port))  # Port Bytes
+            # data.extend([116, 204])  # Static query port bytes 29900
+            data.extend([255])  # End
 
             for i in range(0, len(fields)):
                 if fields[i] in server:
