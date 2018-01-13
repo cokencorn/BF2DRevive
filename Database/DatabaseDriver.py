@@ -1,3 +1,4 @@
+
 import mysql.connector
 from mysql.connector import errorcode
 from Database.DBConfig import DBConfig
@@ -9,6 +10,9 @@ class DatabaseDriver(object):
     DB_NAME = DBConfig.DATABASE_NAME
 
     def __init__(self, connection_string):
+        self.connect(connection_string)
+
+    def connect(self, connection_string):
         self.connection_string = connection_string
         self.connection = mysql.connector.connect(**connection_string)
 
@@ -25,10 +29,12 @@ class DatabaseDriver(object):
             cursor = self.connection.cursor(dictionary=True, buffered=True)
             cursor.execute(sql, params)
             self.connection.commit()
-            return cursor
         except mysql.connector.Error as err:
-            print err
-            return err
+            self.connect(self.connection_string)
+            cursor = self.connection.cursor(dictionary=True, buffered=True)
+            cursor.execute(sql, params)
+            self.connection.commit()
+        return cursor
 
     def create_database(self):
         try:
