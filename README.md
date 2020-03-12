@@ -5,6 +5,7 @@ Battlefield 2 Demo Revive Project - GameSpy Profile and Master Server Emulation 
 	127.0.0.1	battlefield2d.available.gamespy.com
 	127.0.0.1	battlefield2d.master.gamespy.com
 	127.0.0.1	battlefield2d.ms14.gamespy.com
+	127.0.0.1	battlefield2d.ms10.gamespy.com
 	127.0.0.1	gpsp.gamespy.com
 	127.0.0.1	gpcm.gamespy.com
 	127.0.0.1	eapusher.dice.se
