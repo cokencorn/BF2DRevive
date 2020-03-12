@@ -14,7 +14,9 @@ Battlefield 2 Demo Revive Project - GameSpy Profile and Master Server Emulation 
 	127.0.0.1	stage-net.gamespy.com
 	127.0.0.1	available.gamespy.com
 	127.0.0.1	ms14.gamespy.com
+	127.0.0.1	ms10.gamespy.com
 	127.0.0.1	master.gamespy.com
+	127.0.0.1	key.gamespy.com
 
 ### Dependencies
 * [Oracle MySQL Connector](https://dev.mysql.com/downloads/connector/python/) - MySQL Connector Library
