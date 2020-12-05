@@ -189,15 +189,13 @@ class AccountConnection(Thread):
         return True
 
     def send_keep_alive(self, start_now=True):
-        print "KA Req - 1"
         if self.active:
-            print "KA Req - 2"
+            print "KA Request begin"
             if start_now:
-                print "KA Req - 3"
-                # print "Sending keep alive to: " + str(self.uniquenick or self.nick)
+                print "Sending keep alive to: " + str(self.uniquenick or self.nick)
                 self.send_to_client('\\ka\\\\final\\')
             if self.active:
-                print "KA Req - 4"
+                print "Sending keep alive (45 seecond check) to: " + str(self.uniquenick or self.nick)
                 # Send every 45 seconds to check if client is still with us.
                 threading.Timer(45, self.send_keep_alive).start()
 
