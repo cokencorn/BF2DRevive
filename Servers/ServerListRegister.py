@@ -16,11 +16,16 @@ class ServerListRegister(Thread):
     SERVER_CHAL = bytearray([0x01])
 
     debug_mode = False
+    home_host_ip = "46.101.221.26" #BF2Demo.com IP
     registered_servers = {}
 
     def __init__(self, host, port, db):
         super(ServerListRegister, self).__init__()
-        self.host = host
+        # Use this check if you are running gameservers on the same host
+        if(host == "127.0.0.1"):
+            self.host = self.home_host_ip
+        else:           
+            self.host = host
         self.port = port
         self.db = db
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
