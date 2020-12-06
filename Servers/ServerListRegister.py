@@ -21,11 +21,7 @@ class ServerListRegister(Thread):
 
     def __init__(self, host, port, db):
         super(ServerListRegister, self).__init__()
-        # Use this check if you are running gameservers on the same host
-        if(host == "127.0.0.1"):
-            self.host = self.home_host_ip
-        else:           
-            self.host = host
+        self.host = host
         self.port = port
         self.db = db
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
