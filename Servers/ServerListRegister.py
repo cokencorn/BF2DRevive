@@ -16,7 +16,6 @@ class ServerListRegister(Thread):
     SERVER_CHAL = bytearray([0x01])
 
     debug_mode = False
-    home_host_ip = "46.101.221.26" #BF2Demo.com IP
     registered_servers = {}
 
     def __init__(self, host, port, db):
