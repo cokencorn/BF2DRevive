@@ -47,7 +47,7 @@ class CMCommHandler:
                 connection.send_to_client(self.invalid_query("The password provided is incorrect.", 260))
         else:
             connection.send_to_client(self.invalid_query("Username " + query['uniquenick'] + " is not  registered with "
-                                                         + "BF2Demo.com servers.", 265))
+                                                         + "BF2Demo.org servers.", 265))
 
     def new_user(self, query, connection):
 
@@ -61,7 +61,7 @@ class CMCommHandler:
                                                              " Please try another name."))
             else:
                 password = Gamespy.decode_password(connection.passwordenc)
-                connection.password = hashlib.md5(password.encode()).hexdigest()
+                connection.password = hashlib.md5(password).hexdigest()
                 self.debug("Registering a new user")
 
                 pid = connection.db.create_user(connection.nick, connection.password,
@@ -118,10 +118,10 @@ class CMCommHandler:
         if "passenc" in query:
             password = Gamespy.decode_password(query["passenc"])
         elif "pass" in query:
-            password = query["pass"]
+            password = query["pass"].encode()
 
         connection.email = query["email"]
-        connection.password = hashlib.md5(password.encode()).hexdigest()
+        connection.password = hashlib.md5(password).hexdigest()
         users = connection.db.get_user_by_email_password(connection.email, connection.password)
 
         # if not user:
