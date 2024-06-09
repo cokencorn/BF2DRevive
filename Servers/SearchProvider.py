@@ -24,3 +24,4 @@ class SearchProvider(Thread):
             # print "SP: Accepted connection from a client"
             conn = AccountConnection(self, address, client, self.db)
             conn.start()
+            conn.join()

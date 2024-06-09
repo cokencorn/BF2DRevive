@@ -21,6 +21,7 @@ class ServerListProvider(Thread):
         self.sock.listen(10)
         while True:
             client, address = self.sock.accept()
-            # print "SLP: Accepted connection from a game client"
+            # print("SP: Accepted connection from a game client")
             conn = ServerListConnection(self, address, client, self.db)
             conn.start()
+            conn.join()

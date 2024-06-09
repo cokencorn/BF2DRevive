@@ -22,9 +22,9 @@ class CMCommHandler:
             checks += 1
 
         if checks != 3:
-            print "Checks passed: " + str(checks) + "/3"
-            print 'Proof checks failed. Invalid client query.'
-            print query
+            print("Checks passed: " + str(checks) + "/3")
+            print('Proof checks failed. Invalid client query.')
+            print(query)
             connection.send_to_client(self.invalid_query())
 
         # Check if we know the player
@@ -61,17 +61,17 @@ class CMCommHandler:
                                                              " Please try another name."))
             else:
                 password = Gamespy.decode_password(connection.passwordenc)
-                connection.password = hashlib.md5(password).hexdigest()
+                connection.password = hashlib.md5(password.encode()).hexdigest()
                 self.debug("Registering a new user")
 
                 pid = connection.db.create_user(connection.nick, connection.password,
                                                 connection.email, connection.country, connection.address[0])
-                connection.send_to_client("\\nur\\\userid\\" + str(pid) + "\\profileid\\" + str(pid) +
+                connection.send_to_client("\\nur\\userid\\" + str(pid) + "\\profileid\\" + str(pid) +
                                           "\\id\\1\\final\\")
 
         else:
-            print "Invalid query during registration attempt."
-            print query
+            print("Invalid query during registration attempt.")
+            print(query)
             connection.send_to_client(self.invalid_query())
 
     def get_profile(self, query, connection):
@@ -91,8 +91,8 @@ class CMCommHandler:
         # Get first row from cursor
         user = users.fetchone()
         query_string = "\\pi\\\\profileid\\{0}\\nick\\{1}\\userid\\{0}\\email\\{2}\\sig\\{3}\\uniquenick\\" + \
-                       "{1}\\pid\\0\\firstname\\\\lastname\\\countrycode\\{4}\\birthday\\16844722\\" + \
-                       "lon\\0.000000\\lat\\0.000000\\loc\\\id\\{5}\\\\final\\"
+                       "{1}\\pid\\0\\firstname\\\\lastname\\countrycode\\{4}\\birthday\\16844722\\" + \
+                       "lon\\0.000000\\lat\\0.000000\\loc\\id\\{5}\\\\final\\"
 
         query_id = int(query['id'])
         query_string = query_string.format(connection.pid, user['name'], user['email'], self.generate_sig(),
@@ -121,7 +121,7 @@ class CMCommHandler:
             password = query["pass"]
 
         connection.email = query["email"]
-        connection.password = hashlib.md5(password).hexdigest()
+        connection.password = hashlib.md5(password.encode()).hexdigest()
         users = connection.db.get_user_by_email_password(connection.email, connection.password)
 
         # if not user:
@@ -148,7 +148,7 @@ class CMCommHandler:
 
         connection.nick = nick
         connection.email = query["email"]
-        connection.password = hashlib.md5(query["pass"]).hexdigest()
+        connection.password = hashlib.md5(query["pass"].encode()).hexdigest()
 
         # Validate everything we have
         user = connection.db.get_user_by_nick_email_password(connection.nick, connection.email, connection.password)
@@ -165,7 +165,7 @@ class CMCommHandler:
         hash_string += connection.server_challenge
         hash_string += connection.client_challenge
         hash_string += connection.password
-        return hashlib.md5(hash_string).hexdigest()
+        return hashlib.md5(hash_string.encode()).hexdigest()
 
     def generate_resonse(self, connection):
         hash_string = connection.password
@@ -174,24 +174,24 @@ class CMCommHandler:
         hash_string += connection.client_challenge
         hash_string += connection.server_challenge
         hash_string += connection.password
-        return hashlib.md5(hash_string).hexdigest()
+        return hashlib.md5(hash_string.encode()).hexdigest()
 
     def generate_sig(self):
-        return hashlib.md5(self.random_string(32)).hexdigest()
+        return hashlib.md5(self.random_string(32).encode()).hexdigest()
 
     def invalid_query(self, message="Invalid Query!", err_code=0):
-        return '\\error\\\err\\' + str(err_code) + '\\fatal\\\\errmsg\\' + message + '\\id\\1\\final\\'
+        return '\\error\\err\\' + str(err_code) + '\\fatal\\\\errmsg\\' + message + '\\id\\1\\final\\'
 
     def random_string(self, length):
-        return ''.join(random.choice(string.lowercase) for i in range(length))
+        return ''.join(random.choice(string.ascii_lowercase) for i in range(length))
 
     def prepare_nicks(self, users):
         message = "\\nr\\" + str(users.rowcount)
         for user in users:
-            message += "\\nick\{0}\\uniquenick\\{0}".format(user['name'])
+            message += "\\nick\\{0}\\uniquenick\\{0}".format(user['name'])
         message += "\\ndone\\\\final\\"
         return message
 
     def debug(self, string):
         if self.debug_mode:
-            print "DEBUG: " + str(string)
+            print("DEBUG: " + str(string))

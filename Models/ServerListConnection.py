@@ -8,7 +8,7 @@ from Utils.Enctypex import Enctypex
 
 class ServerListConnection(Thread):
     debug_mode = False
-    MS_REQ = bytearray("\x00\x00\x00\x00")
+    MS_REQ = bytearray("\x00\x00\x00\x00", encoding='utf8')
     # DO NOT TOUCH!
     active = True
 
@@ -23,13 +23,13 @@ class ServerListConnection(Thread):
         while self.active:
             buff = self.receive_from_client()
             if buff:
-                self.debug("Received: " + buff)
+                self.debug("Received: " + str(buff))
                 if bytearray(buff).endswith(self.MS_REQ):
-                    buff = buff.split("\x00\x00\x00\x00")
-                    buff = filter(None, buff)
+                    buff = buff.split(b"\x00\x00\x00\x00")
+                    buff = list(filter(None, buff))
                     for index in range(0, len(buff)):
-                        if buff[index].startswith("battlefield2d"):
-                            self.parse_request(buff[index].replace('battlefield2d', '')[2:])
+                        if buff[index].decode().startswith("battlefield2d"):
+                            self.parse_request(buff[index].decode().replace('battlefield2d', '')[2:])
             else:
                 self.active = False
 
@@ -37,7 +37,7 @@ class ServerListConnection(Thread):
         time.sleep(1)
         try:
             return self.socket.recv(8192)
-        except socket.error, exc:
+        except socket.error as exc:
             if exc.errno == errno.WSAECONNRESET:
                 # Client shutdown
                 self.debug("Client disconnected. Code: 10054")
@@ -48,7 +48,7 @@ class ServerListConnection(Thread):
                 self.debug("Client disconnected. Code: 10053")
                 self.active = False
                 return
-            print "SL - RECV Socket error: %s" % exc
+            print("SL - RECV Socket error: %s" % exc)
             self.active = False
 
     def prep_buffer_before_send(self, data):
@@ -58,11 +58,11 @@ class ServerListConnection(Thread):
         return buffer_data
 
     def send_to_client(self, buff):
-        self.debug("Sending: " + buff)
+        self.debug("Sending: " + str(buff))
         try:
             self.socket.send(self.prep_buffer_before_send(buff))
-        except socket.error, exc:
-            print "SL - SEND Socket error: %s" % exc
+        except socket.error as exc:
+            print("SL - SEND Socket error: %s" % exc)
             pass
 
     def parse_request(self, data):
@@ -81,8 +81,8 @@ class ServerListConnection(Thread):
 
         # GSEncode the query
         encoded_query = Enctypex.encode(
-            bytearray("hW6m9a"),  # Battlefield 2 Hand off Key
-            bytearray(validator),
+            bytearray("hW6m9a".encode()),  # Battlefield 2 Hand off Key
+            bytearray(validator.encode()),
             self.pack_server_list(filters, fields)
         )
         # Send it to client
@@ -91,7 +91,7 @@ class ServerListConnection(Thread):
     def pack_server_list(self, filters, fields):
         # We currently do not care about filters
         # Remove empty strings
-        fields = filter(None, fields)
+        fields = list(filter(None, fields))
         data = bytearray()
         # Get IP bytes
         data.extend(socket.inet_aton(self.address[0]))
@@ -101,7 +101,7 @@ class ServerListConnection(Thread):
 
         for index in range(0, len(fields)):
             if len(fields[index]) > 0:
-                data.extend(fields[index])
+                data.extend(fields[index].encode())
                 data.extend([0, 0])
 
         # Server Loop - BEGIN
@@ -118,7 +118,7 @@ class ServerListConnection(Thread):
                 if fields[i] in server:
                     self.debug("Current field: " + fields[i])
                     # Unicode to string conversion
-                    data.extend(str(server[fields[i]]))
+                    data.extend(str(server[fields[i]]).encode())
                     if i < len(fields) - 1:
                         data.extend([0, 255])
 
@@ -130,4 +130,4 @@ class ServerListConnection(Thread):
 
     def debug(self, string):
         if self.debug_mode:
-            print "DEBUG: " + str(string)
+            print("DEBUG: " + str(string))

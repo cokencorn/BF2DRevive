@@ -1,6 +1,3 @@
-from random import randint
-
-
 class GSEncodingData(object):
     encoding_key = bytearray(261)
     offset = None
@@ -33,7 +30,7 @@ class Enctypex(object):
         num_array_1 = bytearray(23)
 
         if key is None or validate is None or data is None or size < 0:
-            print "Enctypex input error."
+            print("Enctypex input error.")
             return None
 
         length = len(key)
@@ -61,10 +58,10 @@ class Enctypex(object):
         num_array_3 = Enctypex.constrained_copy(num_array_2, 0, num_array_3, len(num_array_1), len(num_array_2))
 
         # DEBUG - BEGIN
-        #    print "Enctypex Debug --- BEGIN"
+        #    print ("Enctypex Debug --- BEGIN")
         #    for i in range(0, len(num_array_3)):
         #        print str(i) + " : " + str(num_array_3[i])
-        #    print "Enctypex Debug --- END"
+        #    print ("Enctypex Debug --- END")
         # DEBUG - END
 
         return num_array_3
@@ -97,7 +94,7 @@ class Enctypex(object):
         if u0006.start == 0:
             return None
 
-        print "Enctypex: u0006 is None. Data (u0006): " + str(u0006)
+        print("Enctypex: u0006 is None. Data (u0006): " + str(u0006))
 
         num_array_2 = bytearray(u0008 - u0006.offset)
         num_array_2 = Enctypex.constrained_copy(u0005, u0006.offset, num_array_2, 0, u0008 - u0006.offset)

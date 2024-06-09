@@ -32,12 +32,11 @@ class ServerListRegister(Thread):
         self.check_servers()
 
     def run(self):
-
         while True:
             message, address = self.sock.recvfrom(65535)
             if self.debug_mode:
-                print "DEBUG: Address: " + str(address)
-                print "DEBUG: Content: " + message
+                print("DEBUG: Address: " + str(address))
+                print("DEBUG: Content: " + str(message))
 
             if not self.get_server(address):
                 # New connection
@@ -45,7 +44,7 @@ class ServerListRegister(Thread):
                     self.debug("__ BF2 AVAILABLE __")
                     self.send_to_server(self.BF2_AVAILABLE_REPLY, address)
 
-                if len(message) > 5 and message[0] == self.SERVER_DETAILS:
+                if len(message) > 5 and message[0:1] == self.SERVER_DETAILS:
                     self.debug("__ SERVER CHAL SENT __")
                     # Server details coming in
                     server = GameServer(address, self.db, self.debug_mode)
@@ -64,20 +63,20 @@ class ServerListRegister(Thread):
 
             else:
                 # We know this guy
-                if len(message) == 5 and message[0] == self.SERVER_PING:
+                if len(message) == 5 and message[0:1] == self.SERVER_PING:
                     # Server ping
                     self.debug("__ SERVER PING __")
                     server = self.get_server(address)
                     server.server_ping()
 
-                if len(message) > 5 and message[0] == self.SERVER_DETAILS:
+                if len(message) > 5 and message[0:1] == self.SERVER_DETAILS:
                     self.debug("__ SERVER DETAILS UPDATE __")
                     server = self.get_server(address)
                     details_all = bytearray(message)[5:]
-                    server_details = details_all.split('\x00')
+                    server_details = details_all.split(b'\x00')
                     server.update_server_details(server_details)
 
-                if len(message) > 5 and message[0] == self.SERVER_CHAL:
+                if len(message) > 5 and message[0:1] == self.SERVER_CHAL:
                     # Validation challenge response
                     self.debug("__ SERVER CHAL RESPONSE __")
                     details = bytearray(message)[:5]
@@ -90,7 +89,7 @@ class ServerListRegister(Thread):
                         server.server_validate()
 
     def send_to_server(self, buff, address):
-        self.debug("Sending: " + buff)
+        self.debug("Sending: " + str(buff))
         self.sock.sendto(buff, address)
 
     def get_server(self, address):
@@ -106,11 +105,12 @@ class ServerListRegister(Thread):
         self.registered_servers.pop(address)
 
     def check_servers(self):
-        threading.Timer(30, self.check_servers).start()
+        checker = threading.Timer(30, self.check_servers)
+        checker.start()
         for address, server in self.registered_servers.items():
             if not server.is_active():
                 self.server_disconnect(address)
 
     def debug(self, string):
         if self.debug_mode:
-            print "DEBUG: " + str(string)
+            print("DEBUG: " + str(string))

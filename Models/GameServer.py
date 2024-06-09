@@ -48,11 +48,11 @@ class GameServer:
             # Save or Update
             if self.server_id is not None:
                 if self.debug_mode:
-                    print "DEBUG: Updating server info on DB."
+                    print ("DEBUG: Updating server info on DB.")
                 self.db.update_server(self.server_id, server_vars_db)
             else:
                 if self.debug_mode:
-                    print "DEBUG: Saving server info on DB."
+                    print ("DEBUG: Saving server info on DB.")
                 self.server_id = self.db.add_server(server_vars_db)
 
     def is_active(self):
@@ -61,133 +61,59 @@ class GameServer:
     def update_server_details(self, server_details):
         # Populating or Updating
         self.server_refresh()
+
+        # Mapping keys to attributes
+        attributes = {
+            "localip0": "localip0",
+            "gametype": "gametype",
+            "localip1": "localip1",
+            "localport": "localport",
+            "natneg": "natneg",
+            "statechanged": "statechanged",
+            "gamename": "gamename",
+            "hostname": "hostname",
+            "gamever": "gamever",
+            "mapname": "mapname",
+            "gamevariant": "gamevariant",
+            "numplayers": "numplayers",
+            "maxplayers": "maxplayers",
+            "gamemode": "gamemode",
+            "password": "password",
+            "timelimit": "timelimit",
+            "roundtime": "roundtime",
+            "hostport": "hostport",
+            "bf2_dedicated": "bf2_dedicated",
+            "bf2_ranked": "bf2_ranked",
+            "bf2_anticheat": "bf2_anticheat",
+            "bf2_os": "bf2_os",
+            "bf2_autorec": "bf2_autorec",
+            "bf2_d_idx": "bf2_d_idx",
+            "bf2_d_dl": "bf2_d_dl",
+            "bf2_voip": "bf2_voip",
+            "bf2_autobalanced": "bf2_autobalanced",
+            "bf2_friendlyfire": "bf2_friendlyfire",
+            "bf2_startdelay": "bf2_startdelay",
+            "bf2_spawntime": "bf2_spawntime",
+            "bf2_sponsortext": "bf2_sponsortext",
+            "bf2_sponsorlogo_url": "bf2_sponsorlogo_url",
+            "bf2_communitylogo_url": "bf2_communitylogo_url",
+            "bf2_scorelimit": "bf2_scorelimit",
+            "bf2_ticketratio": "bf2_ticketratio",
+            "bf2_teamratio": "bf2_teamratio",
+            "bf2_team1": "bf2_team1",
+            "bf2_team2": "bf2_team2",
+            "bf2_bots": "bf2_bots",
+            "bf2_pure": "bf2_pure",
+            "bf2_mapsize": "bf2_mapsize",
+            "bf2_globalunlocks": "bf2_globalunlocks"
+        }
+
         # Go through details
-        for index in range(0, len(server_details)):
-            if (server_details[index]) == "localip0":
-                self.localip0 = server_details[index + 1]
-                pass
-            if (server_details[index]) == "gametype":
-                self.gametype = server_details[index + 1]
-                pass
-            if (server_details[index]) == "localip1":
-                self.localip1 = server_details[index + 1]
-                pass
-            if (server_details[index]) == "localport":
-                self.localport = server_details[index + 1]
-                pass
-            if (server_details[index]) == "natneg":
-                self.natneg = str(str(server_details[index + 1]))
-                pass
-            if (server_details[index]) == "statechanged":
-                self.statechanged = str(str(server_details[index + 1]))
-                pass
-            if (server_details[index]) == "gamename":
-                self.gamename = str(str(server_details[index + 1]))
-                pass
-            if (server_details[index]) == "hostname":
-                self.hostname = str(str(server_details[index + 1]))
-                pass
-            if (server_details[index]) == "gamever":
-                self.gamever = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "mapname":
-                self.mapname = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "gamevariant":
-                self.gamevariant = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "numplayers":
-                self.numplayers = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "maxplayers":
-                self.maxplayers = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "gamemode":
-                self.gamemode = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "password":
-                self.password = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "timelimit":
-                self.timelimit = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "roundtime":
-                self.roundtime = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "hostport":
-                self.hostport = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "bf2_dedicated":
-                self.bf2_dedicated = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "bf2_ranked":
-                self.bf2_ranked = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "bf2_anticheat":
-                self.bf2_anticheat = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "bf2_os":
-                self.bf2_os = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "bf2_autorec":
-                self.bf2_autorec = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "bf2_d_idx":
-                self.bf2_d_idx = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "bf2_d_dl":
-                self.bf2_d_dl = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "bf2_voip":
-                self.bf2_voip = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "bf2_autobalanced":
-                self.bf2_autobalanced = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "bf2_friendlyfire":
-                self.bf2_friendlyfire = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "bf2_startdelay":
-                self.bf2_startdelay = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "bf2_spawntime":
-                self.bf2_spawntime = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "bf2_sponsortext":
-                self.bf2_sponsortext = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "bf2_sponsorlogo_url":
-                self.bf2_sponsorlogo_url = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "bf2_communitylogo_url":
-                self.bf2_communitylogo_url = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "bf2_scorelimit":
-                self.bf2_scorelimit = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "bf2_ticketratio":
-                self.bf2_ticketratio = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "bf2_teamratio":
-                self.bf2_teamratio = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "bf2_team1":
-                self.bf2_team1 = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "bf2_team2":
-                self.bf2_team2 = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "bf2_bots":
-                self.bf2_bots = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "bf2_pure":
-                self.bf2_pure = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "bf2_mapsize":
-                self.bf2_mapsize = str(server_details[index + 1])
-                pass
-            if (server_details[index]) == "bf2_globalunlocks":
-                self.bf2_globalunlocks = str(server_details[index + 1])
-                pass
+        for index in range(0, len(server_details), 2):
+            key = server_details[index].decode('utf-8')
+            value = server_details[index + 1].decode('utf-8')
+            if key in attributes:
+                setattr(self, attributes[key], value)
+
         # Details updated, attempt to save/update server on DB.
         self.server_save()

@@ -1,4 +1,3 @@
-
 import mysql.connector
 from mysql.connector import errorcode
 from Database.DBConfig import DBConfig
@@ -42,7 +41,7 @@ class DatabaseDriver(object):
             cursor.execute("CREATE DATABASE {} DEFAULT CHARACTER SET 'utf8'".format(self.DB_NAME))
             cursor.close()
         except mysql.connector.Error as err:
-            print "DB Error: Failed create database: {}".format(self.DB_NAME)
+            print("DB Error: Failed create database: {}".format(self.DB_NAME))
 
     def execute(self, sql):
         try:
@@ -50,6 +49,6 @@ class DatabaseDriver(object):
             return cursor.execute(sql)
         except mysql.connector.Error as err:
             if err.errno == errorcode.ER_TABLE_EXISTS_ERROR:
-                print "DB Info: " + str(err.msg)
+                print("DB Info: " + str(err.msg))
             else:
-                print "DB Error: " + str(err.message)
+                print("DB Error: " + str(err.message))
