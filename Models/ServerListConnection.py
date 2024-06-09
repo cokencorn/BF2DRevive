@@ -106,9 +106,13 @@ class ServerListConnection(Thread):
 
         # Server Loop - BEGIN
         for server in self.db.get_servers():
+            if server['server_ip'] == '127.0.0.1':
+                server_ip = '108.61.178.235'
+            else:
+                server_ip = server['server_ip']
 
             data.append(81)
-            data.extend(socket.inet_aton(server['server_ip']))  # IP Bytes
+            data.extend(socket.inet_aton(server_ip))  # IP Bytes
             query_port = struct.pack('>H', int(server['server_port']))
             data.extend(struct.unpack('>BB', query_port))  # Port Bytes
             # data.extend([116, 204])  # Static query port bytes 29900
