@@ -26,7 +26,7 @@ class ServerListConnection(Thread):
                 self.debug("Received: " + str(buff))
                 if bytearray(buff).endswith(self.MS_REQ):
                     buff = buff.split(b"\x00\x00\x00\x00")
-                    buff = list(filter(None, buff))
+                    # buff = list(filter(None, buff))
                     for index in range(0, len(buff)):
                         if buff[index].decode().startswith("battlefield2d"):
                             self.parse_request(buff[index].decode().replace('battlefield2d', '')[2:])
