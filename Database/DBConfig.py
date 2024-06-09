@@ -10,4 +10,5 @@ class DBConfig:
             'user': DBConfig.DATABASE_USER,
             'password': DBConfig.DATABASE_PASS,
             'host': DBConfig.DATABASE_HOST,
+            'ssl_disabled': True,
         }
