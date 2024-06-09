@@ -7,7 +7,7 @@ from Utils.Enctypex import Enctypex
 
 
 class ServerListConnection(Thread):
-    debug_mode = False
+    debug_mode = True
     MS_REQ = bytearray("\x00\x00\x00\x00", encoding='utf8')
     # DO NOT TOUCH!
     active = True
