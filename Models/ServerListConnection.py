@@ -28,8 +28,8 @@ class ServerListConnection(Thread):
                     buff = buff.split(b"\x00\x00\x00\x00")
                     buff = list(filter(None, buff))
                     for index in range(0, len(buff)):
-                        if buff[index].decode().startswith("battlefield2d"):
-                            self.parse_request(buff[index].decode().replace('battlefield2d', '')[2:])
+                        if buff[index].startswith("battlefield2d"):
+                            self.parse_request(buff[index].replace('battlefield2d', '')[2:])
             else:
                 self.active = False
 
