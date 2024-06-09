@@ -15,7 +15,7 @@ class GamespyServerDB(DatabaseDriver):
         query_params = []
         query_vals = []
 
-        for key, value in server_vars.iteritems():
+        for key, value in server_vars.items():
             query_params.append(key)
             query_vals.append(value)
 
@@ -39,7 +39,7 @@ class GamespyServerDB(DatabaseDriver):
         query_params = []
         query_vals = []
 
-        for key, value in server_vars.iteritems():
+        for key, value in server_vars.items():
             query_params.append(key)
             query_vals.append(value)
 
