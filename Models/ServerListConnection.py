@@ -24,7 +24,7 @@ class ServerListConnection(Thread):
             buff = self.receive_from_client()
             if buff:
                 self.debug("Received: " + str(buff))
-                if bytearray(buff, encoding='utf8').endswith(self.MS_REQ):
+                if bytearray(buff).endswith(self.MS_REQ):
                     buff = buff.split(b"\x00\x00\x00\x00")
                     buff = list(filter(None, buff))
                     for index in range(0, len(buff)):
