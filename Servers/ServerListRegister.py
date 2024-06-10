@@ -107,8 +107,10 @@ class ServerListRegister(Thread):
     def check_servers(self):
         checker = threading.Timer(30, self.check_servers)
         checker.start()
-        for address, server in self.registered_servers.items():
+        for address, server in self.registered_servers.copy().items():
+            print('checking server')
             if not server.is_active():
+                print('removing server')
                 self.server_disconnect(address)
 
     def debug(self, string):
