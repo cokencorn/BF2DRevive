@@ -25,8 +25,8 @@ class GameServer:
         self.server_ping()
         self.validated = False
 
-        self.last_ping = None
-        self.last_refresh = None
+        self.last_ping = 0
+        self.last_refresh = 0
 
     def server_refresh(self):
         self.last_refresh = time.time()

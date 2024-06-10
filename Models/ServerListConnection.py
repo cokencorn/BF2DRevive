@@ -42,14 +42,9 @@ class ServerListConnection(Thread):
         try:
             return self.socket.recv(8192)
         except socket.error as exc:
-            if exc.errno == errno.WSAECONNRESET:
-                # Client shutdown
-                self.debug("Client disconnected. Code: 10054")
-                self.active = False
-                return
             if exc.errno == errno.ECONNRESET:
                 # Too frequent requests causes this, drop them
-                self.debug("Client disconnected. Code: 10053")
+                self.debug("Client disconnected. Code: 10054")
                 self.active = False
                 return
             print("SL - RECV Socket error: %s" % exc)
