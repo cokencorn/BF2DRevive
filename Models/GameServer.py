@@ -51,11 +51,11 @@ class GameServer:
             # Save or Update
             if self.server_id is not None:
                 if self.debug_mode:
-                    print ("DEBUG: Updating server info on DB.")
+                    print("DEBUG: Updating server info on DB.")
                 self.db.update_server(self.server_id, server_vars_db)
             else:
                 if self.debug_mode:
-                    print ("DEBUG: Saving server info on DB.")
+                    print("DEBUG: Saving server info on DB.")
                 self.server_id = self.db.add_server(server_vars_db)
 
     def is_active(self):
