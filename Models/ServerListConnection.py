@@ -7,7 +7,7 @@ from Utils.Enctypex import Enctypex
 
 
 class ServerListConnection(Thread):
-    debug_mode = False
+    debug_mode = True
     MS_REQ = bytearray("\x00\x00\x00\x00", encoding='utf8')
     # DO NOT TOUCH!
     active = True
@@ -101,7 +101,6 @@ class ServerListConnection(Thread):
 
             for i in range(0, len(fields)):
                 if fields[i] in server:
-                    self.debug("Current field: " + fields[i])
                     # Unicode to string conversion
                     data.extend(str(server[fields[i]]).encode())
                     if i < len(fields) - 1:
