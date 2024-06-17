@@ -25,15 +25,10 @@ class ServerListConnection(Thread):
             if buff:
                 self.debug("Received: " + str(buff))
                 if bytearray(buff).endswith(self.MS_REQ):
-                    buff = buff.split(b"\x01\x8d\x00\x01\x03\x00\x00\x00\x00")
+                    buff = buff.split(b"battlefield2d\x00battlefield2d")
                     buff = list(filter(None, buff))
-                    for index in range(0, len(buff)):
-                        try:
-                            if buff[index].decode().startswith("battlefield2d"):
-                                self.parse_request(buff[index].decode().replace('battlefield2d', '')[2:])
-                        except:
-                            print('Invalid server list request. Skipping.')
-
+                    if buff[1]:
+                        self.parse_request(buff[1].decode()[2:])
             else:
                 self.active = False
 
