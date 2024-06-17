@@ -15,7 +15,7 @@ class ServerListRegister(Thread):
     SERVER_PING = bytearray([0x08])
     SERVER_CHAL = bytearray([0x01])
 
-    debug_mode = False
+    debug_mode = True
     registered_servers = {}
 
     def __init__(self, host, port, db):
