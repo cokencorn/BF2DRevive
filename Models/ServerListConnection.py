@@ -7,7 +7,7 @@ from Utils.Enctypex import Enctypex
 
 
 class ServerListConnection(Thread):
-    debug_mode = False
+    debug_mode = True
     MS_REQ = bytearray("\x00\x00\x00\x00", encoding='utf8')
     # DO NOT TOUCH!
     active = True
@@ -26,9 +26,8 @@ class ServerListConnection(Thread):
                 self.debug("Received: " + str(buff))
                 if bytearray(buff).endswith(self.MS_REQ):
                     buff = buff.split(b"battlefield2d\x00battlefield2d")
-                    buff = list(filter(None, buff))
                     if buff[1]:
-                        self.parse_request(buff[1].decode()[2:])
+                        self.parse_request(buff[1].decode()[1:])
             else:
                 self.active = False
 
@@ -64,11 +63,11 @@ class ServerListConnection(Thread):
         data = data.split('\x00')
         validator = data[0][:8]
         filters = data[0][8:]
-        fields = data[1].split('\\')
+        fields = list(filter(None, data[1].split('\\')))
 
         # GSEncode the query
         encoded_query = Enctypex.encode(
-            bytearray("hW6m9a".encode()),  # Battlefield 2 Hand off Key
+            bytearray("hW6m9a".encode()),  # Battlefield 2 Handoff Key
             bytearray(validator.encode()),
             self.pack_server_list(filters, fields)
         )
